@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agrupamiento de Medicamentos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        table {
+            margin: 0 auto 40px auto;
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        thead {
+            background-color: #2980b9;
+            color: white;
+        }
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            font-size: 1rem;
+        }
+        tbody tr:hover {
+            background-color: #f1f9ff;
+        }
+        img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+        a.btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px auto 0 auto;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        a.btn:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            table {
+                width: 100%;
+            }
+            img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Agrupamiento de Medicamentos (KMeans)</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Medicamento</th>
+                <th>Promedio Vendido</th>
+                <th>Desviación Estándar</th>
+                <th>Cluster</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in nombre %}
+            <tr>
+                <td>{{ item.nombre }}</td>
+                <td>{{ "%.2f"|format(item.mean) }}</td>
+                <td>{{ "%.2f"|format(item.std) }}</td>
+                <td>{{ item.cluster }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Visualización del Agrupamiento</h2>
+    <img src="data:image/png;base64,{{ grafico_base64 }}" alt="Gráfico de Agrupamiento" />
+        <h2>Resumen por Clúster</h2>
+        <ul style="list-style-type:none; padding:0; max-width: 700px; margin: 0 auto 40px auto; text-align: left;">
+        {% for cluster in resumen_clusters %}
+        <li style="background:#f0f4f8; margin-bottom: 12px; padding: 15px; border-radius: 6px;">
+            <strong>Cluster {{ cluster.cluster }}:</strong><br/>
+            - Número de medicamentos: {{ cluster.num_medicamentos }}<br/>
+            - Promedio de ventas: {{ cluster.promedio_ventas }}<br/>
+            - Promedio desviación estándar: {{ cluster.promedio_std }}<br/>
+            - Interpretación: <em>{{ cluster.interpretacion }}</em>
+        </li>
+        {% endfor %}
+        </ul>
+
+        <p style="max-width: 700px; margin: 0 auto 40px auto; font-style: italic; color: #555;">
+        Los clusters agrupan medicamentos con patrones similares de ventas promedio y variabilidad, lo cual puede ayudar a identificar tendencias y diseñar estrategias de inventario y ventas más efectivas.
+        </p>
+
+    <a href="{{ url_for('index') }}" class="btn">Volver al Inicio</a>
+</body>
+</html>

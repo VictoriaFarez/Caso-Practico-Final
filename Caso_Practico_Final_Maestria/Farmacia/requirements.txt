@@ -1,0 +1,12 @@
+Flask
+pandas
+numpy
+scikit-learn
+matplotlib
+tensorflow
+nltk
+requests
+llama-cpp-python
+pytesseract
+Pillow
+opencv-python

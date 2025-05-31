@@ -1,0 +1,236 @@
+<!-- templates/ventas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Datos de Ventas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e9f0f7;
+            margin: 0;
+            padding: 40px 20px;
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            background-color: #fff;
+            max-width: 900px;
+            width: 100%;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+        h2 {
+            text-align: center;
+            color: #144552; /* azul petróleo oscuro */
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: 1.1px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #144552;
+            margin-right: 8px;
+            align-self: center;
+        }
+        select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1.8px solid #c3d0dc;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            min-width: 120px;
+        }
+        select:focus {
+            border-color: #fbbf24; /* naranja dorado */
+            outline: none;
+            box-shadow: 0 0 6px rgba(251, 191, 36, 0.6);
+        }
+
+        button.btn {
+            background: linear-gradient(90deg, #144552, #176a7b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(23, 106, 123, 0.5);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            align-self: center;
+        }
+        button.btn:hover {
+            background: linear-gradient(90deg, #1f6677, #2a8294);
+            box-shadow: 0 10px 25px rgba(42, 130, 148, 0.7);
+        }
+
+        p {
+            font-weight: 600;
+            margin: 12px 0;
+            font-size: 1.1rem;
+            color: #144552;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #34495e;
+        }
+
+        thead tr {
+            background-color: #fbbf24; /* naranja dorado */
+            color: white;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 8px;
+        }
+
+        thead tr th {
+            padding: 12px 15px;
+        }
+
+        tbody tr {
+            background-color: #fef9f3;
+            border-radius: 8px;
+            transition: background-color 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        tbody tr:hover {
+            background-color: #fff5d1;
+        }
+        tbody tr td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        /* Enlace volver */
+        a.btn {
+            display: inline-block;
+            margin: 30px auto 0;
+            background: linear-gradient(90deg, #144552, #176a7b);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 6px 15px rgba(23, 106, 123, 0.5);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        a.btn:hover {
+            background: linear-gradient(90deg, #1f6677, #2a8294);
+            box-shadow: 0 10px 25px rgba(42, 130, 148, 0.7);
+        }
+
+        /* Mensaje cuando no hay datos */
+        p.no-data {
+            text-align: center;
+            font-style: italic;
+            color: #999;
+            font-weight: 500;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 650px) {
+            form {
+                flex-direction: column;
+                gap: 15px;
+            }
+            select {
+                width: 100%;
+                min-width: auto;
+            }
+            button.btn, a.btn {
+                width: 100%;
+                text-align: center;
+            }
+            tbody tr td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Datos de Ventas</h2>
+    <form method="GET" action="{{ url_for('ventas') }}">
+        <label for="anio">Año:</label>
+        <select id="anio" name="anio" required>
+            {% for y in range(2020, 2026) %}
+            <option value="{{ y }}" {% if request.args.get('anio') == y|string %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="mes">Mes:</label>
+        <select id="mes" name="mes" required>
+            {% for i in range(1, 13) %}
+            <option value="{{ "%02d"|format(i) }}" {% if request.args.get('mes') == "%02d"|format(i) %}selected{% endif %}>
+                {{ ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][i-1] }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn">Filtrar</button>
+    </form>
+
+    {% if not csv_data %}
+        <p class="no-data">No hay ventas para el mes seleccionado.</p>
+    {% endif %}
+
+    {% if mes_filtrado_texto %}
+        <p><strong>Mes filtrado:</strong> {{ mes_filtrado_texto|capitalize }}</p>
+    {% endif %}
+
+    <p>Total de ventas: {{ total_ventas }}</p>
+    <p>Total de medicamentos vendidos: {{ total_medicamentos }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Medicamento</th>
+                <th>Cantidad Vendida</th>
+                <th>Precio Unitario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in csv_data %}
+            <tr>
+                <td>{{ row['fecha'] }}</td>
+                <td>{{ row['nombre'] }}</td>
+                <td>{{ row['cantidad_vendida'] }}</td>
+                <td>{{ row['precio'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if grafico_base64 %}
+    <h3 style="text-align: center;">Ventas reales por día</h3>
+    <img src="data:image/png;base64,{{ grafico_base64 }}" alt="Gráfico de ventas reales por día" style="max-width: 100%; height: auto; border-radius: 8px;" />
+    {% endif %}
+    <a href="{{ url_for('index') }}" class="btn">Volver al Inicio</a>
+</div>
+</body>
+</html>

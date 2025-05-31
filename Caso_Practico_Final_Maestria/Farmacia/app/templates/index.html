@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Farmacia Inteligente</title>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e8f0fe, #ffffff);
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      width: 90%;
+      max-width: 900px;
+      margin: 30px 0 70px;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1a2935; /* un azul petróleo más oscuro */
+      font-weight: 700;
+      margin-bottom: 25px;
+      letter-spacing: 1.2px;
+    }
+
+    /* Botones con icono al lado */
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .btn-with-icon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #144552; /* azul petróleo oscuro */
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(20, 69, 82, 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-with-icon:hover {
+      background-color: #176a7b; /* un azul petróleo un poco más claro */
+      box-shadow: 0 6px 15px rgba(23, 106, 123, 0.6);
+    }
+
+    .btn-text {
+      flex: 1;
+    }
+
+    .icon {
+      width: 36px;
+      height: 36px;
+      fill: #fbbf24; /* color naranja claro (amarillo dorado) */
+      margin-left: 15px;
+      flex-shrink: 0;
+      transition: fill 0.3s ease;
+    }
+
+    .btn-with-icon:hover .icon {
+      fill: #ffd670; /* naranja más claro al pasar el mouse */
+    }
+
+    /* Footer con imagen */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #ecf0f1;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+
+    footer img {
+      height: 50px;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 600px) {
+      .btn-with-icon {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .icon {
+        margin-left: 0;
+        margin-top: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>PROYECTO PLATAFORMA INTELIGENTE PARA LA INTERPRETACIÓN DE RECETAS Y PREDICCIÓN DE VENTAS</h1>
+
+    <div class="btn-container">
+      <a href="{{ url_for('ventas') }}" class="btn-with-icon">
+        <span class="btn-text">Ver ventas farmacia</span>
+        <!-- Icono frasco medicina -->
+        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 2h8v2H8z" />
+          <path d="M7 4h10v17H7z" />
+          <path d="M9 7h6v11H9z" fill="white"/>
+        </svg>
+      </a>
+      <a href="{{ url_for('prediccion') }}" class="btn-with-icon">
+        <span class="btn-text">Ver Gráfico de Predicción</span>
+        <!-- Icono gráfico simple -->
+        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="14" width="3" height="6" />
+          <rect x="10.5" y="9" width="3" height="11" />
+          <rect x="17" y="5" width="3" height="15" />
+        </svg>
+      </a>
+      <a href="{{ url_for('agrupamiento') }}" class="btn-with-icon">
+        <span class="btn-text">Ver Agrupamiento de Medicamentos</span>
+        <!-- Icono caja de medicina -->
+        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="5" width="14" height="14" rx="2" ry="2" />
+          <path d="M12 7v10M7 12h10" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a href="{{ url_for('subir_receta') }}" class="btn-with-icon">
+        <span class="btn-text">Ir a Reconocimiento de Recetas</span>
+        <!-- Icono receta médica -->
+        <svg class="icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 2h12l2 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z" />
+          <path d="M9 10h6M9 14h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Logo Farmacia" />
+  </footer>
+
+</body>
+</html>

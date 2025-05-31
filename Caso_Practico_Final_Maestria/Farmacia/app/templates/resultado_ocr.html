@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Resultado de OCR</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0 20px 40px;
+            background-color: #f9fbfc;
+            color: #2c3e50;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        pre {
+            background-color: #eef4f8;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-size: 1rem;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 40px;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            user-select: none;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f7fbff;
+        }
+        tbody tr:hover {
+            background-color: #dceeff;
+            cursor: default;
+        }
+        /* Disponibilidad con íconos */
+        .status-yes {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-no {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        /* Fila colapsable para equivalentes */
+        .equivalentes-row {
+            background-color: #fff9f9;
+            font-size: 0.9rem;
+            color: #555;
+            text-align: left !important;
+            display: none;
+        }
+        .equivalentes-content {
+            padding: 12px 15px;
+        }
+        .toggle-btn {
+            background-color: transparent;
+            border: none;
+            color: #2980b9;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            user-select: none;
+        }
+        .toggle-btn:hover {
+            color: #1c5ea8;
+        }
+        /* Botones */
+        a, .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, box-shadow 0.2s ease;
+            margin: 0 5px 20px 5px;
+            user-select: none;
+        }
+        a:hover, .btn:hover {
+            background-color: #2980b9;
+            box-shadow: 0 3px 8px rgba(41,128,185,0.4);
+        }
+        /* Íconos Unicode */
+        .icon-check::before {
+            content: "✔️ ";
+        }
+        .icon-cross::before {
+            content: "❌ ";
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Texto Detectado</h1>
+    <pre>{{ texto or "No se detectó texto." }}</pre>
+
+    <h2>Medicamentos Detectados y Disponibilidad</h2>
+
+    {% if disponibilidad and disponibilidad|length > 0 %}
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Medicamento</th>
+                <th>Dosis</th>
+                <th>Disponible</th>
+                <th>Cantidad en Stock</th>
+                <th>Precio</th>
+                <th>Equivalentes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in disponibilidad %}
+            <tr>
+                <td>{{ item.medicamento }}</td>
+                <td>{{ item.dosis or "No especificada" }}</td>
+                <td class="{{ 'status-yes icon-check' if item.disponible else 'status-no icon-cross' }}">
+                    {{ "Sí" if item.disponible else "No" }}
+                </td>
+                <td>{{ item.cantidad_disponible if item.disponible else "0" }}</td>
+                <td>{{ item.precio if item.disponible else "-" }}</td>
+                <td>
+                    {% if not item.disponible and item.equivalencias %}
+                    <button class="toggle-btn" aria-expanded="false" aria-controls="equiv-{{ loop.index }}">Mostrar</button>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% if not item.disponible and item.equivalencias %}
+            <tr id="equiv-{{ loop.index }}" class="equivalentes-row">
+                <td colspan="6">
+                    <div class="equivalentes-content">
+                        <strong>Equivalentes encontrados:</strong> {{ item.equivalencias.sustitutos | join(', ') }}<br><br>
+                        {% if item.equivalencias.disponibles %}
+                            <strong>Disponibles:</strong><br>
+                            {% for eq in item.equivalencias.disponibles %}
+                                - {{ eq.nombre }} ({{ eq.dosis }}): {{ eq.cantidad_disponible }} unidades disponibles, ${{ eq.precio }}<br>
+                            {% endfor %}
+                        {% else %}
+                            <em>No hay stock de equivalentes disponibles.</em><br>
+                        {% endif %}
+                        <br>
+                        <strong>Usos:</strong> {{ item.equivalencias.usos | join(', ') }}<br>
+                        <strong>Efectos secundarios:</strong> {{ item.equivalencias.efectos_secundarios | join(', ') }}
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p style="text-align:center; font-style: italic;">No se detectaron medicamentos en la receta o no hay información de disponibilidad.</p>
+    {% endif %}
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('subir_receta') }}">Subir otra receta</a>
+        <a href="{{ url_for('index') }}" class="btn">Volver a la Página Principal</a>
+        <a href="{{ url_for('index') }}" class="btn">Ir a facturacion</a>
+    </div>
+
+    <script>
+        document.querySelectorAll('.toggle-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('aria-controls');
+                const targetRow = document.getElementById(targetId);
+                if (targetRow.style.display === 'table-row') {
+                    targetRow.style.display = 'none';
+                    button.textContent = 'Mostrar';
+                    button.setAttribute('aria-expanded', 'false');
+                } else {
+                    targetRow.style.display = 'table-row';
+                    button.textContent = 'Ocultar';
+                    button.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
